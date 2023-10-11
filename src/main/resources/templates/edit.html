@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/head :: head('Nuova Pizza')}"></head>
+
+    <body>
+        <h1 class="pt-3 pb-5 text-center">Modifica Pizza</h1>
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <form th:object="${pizza}" th:action="@{/update/{id}(id=${pizza.getId()})}" method="post" class="d-flex flex-column gap-3 al-bg-secondary al-border p-4 mt-5">
+                    <h4 th:text="${pizza.getName()}" class="text-center pb-2"></h4>
+
+                    <div class="d-flex flex-column gap-1">
+                        <label for="name">Nome</label>
+                        <div th:if="${#fields.hasErrors('name')}">
+                            <input type="text" name="name" th:field="*{name}" id="name" placeholder="Nome..." required maxlength="255" class="form-control is-invalid">
+                            <div class="invalid-feedback">
+                                Inserisci il nome della pizza.
+                            </div>
+                        </div>
+                        <input type="text" th:unless="${#fields.hasErrors('name')}" name="name" th:field="*{name}" id="name" placeholder="Nome..." required maxlength="255">
+                    </div>
+    
+                    <div class="d-flex flex-column gap-1">
+                        <label for="description">Ingredienti</label>
+                        <div th:if="${#fields.hasErrors('description')}">
+                            <input type="text" name="description" th:field="*{description}" id="description" placeholder="Ingredienti..." required maxlength="255" class="form-control is-invalid">
+                            <div class="invalid-feedback">
+                                Inserisci gli ingredienti della pizza.
+                            </div>
+                        </div>
+                        <input type="text" th:unless="${#fields.hasErrors('description')}" name="description" th:field="*{description}" id="name" placeholder="Ingredienti..." required maxlength="255">
+                    </div>
+    
+                    <div class="d-flex flex-column gap-1">
+                        <label for="price">Prezzo</label>
+                        <div th:if="${#fields.hasErrors('price')}">
+                            <input type="number" name="price" th:field="*{price}" id="price" placeholder="Prezzo..." required maxlength="255" min="0" max="1000000" step="0.5" class="form-control is-invalid">
+                            <div class="invalid-feedback">
+                                Inserisci il prezzo della pizza. Il prezzo non può essere negativo.
+                            </div>
+                        </div>
+                        <input type="number" th:unless="${#fields.hasErrors('price')}" name="price" th:field="*{price}" id="price" placeholder="Prezzo..." step="0.5" min="0" max="10000000">
+                    </div>
+    
+                    <div class="d-flex justify-content-end mt-3">
+                        <input type="submit" class="btn btn-outline-light px-4" value="Invia">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="pt-5">
+                <a th:href="@{/}" class="btn btn-outline-light fs-3">Home</a>
+            </div>
+        </div>
+    </body>
+</html>

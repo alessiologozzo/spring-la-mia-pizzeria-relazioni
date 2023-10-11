@@ -1,0 +1,46 @@
+<form th:fragment="pizzaCard(pizza)" th:action="@{/pizza/{id}(id=${pizza.getId()})}" method="get" class="pizza-card">
+    <div class="card-head">
+        <h5 th:text="${pizza.getName()}" class="truncate"></h5>
+    </div>
+    <div class="card-body">
+        
+        <div class="actions">
+            <i class="fa-solid fa-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setPizzaData(${pizza.getId()}, '${pizza.getName()}')|"></i>
+            <a th:href="@{/edit/{id}(id=${pizza.getId()})}" class="edit-icon">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+        </div>
+
+        <div class="img-container">
+            <img th:if="${pizza.getUrl()} != null" th:src="@{${pizza.getUrl()}}" th:alt="${pizza.getName()}">
+            <img th:unless="${pizza.getUrl()} != null" th:src="@{/images/pizza.jpg}" th:alt="${pizza.getName()}">
+        </div>
+
+        <div class="info-container">
+            <div>
+                <div th:if="${pizza.getSpecialOffer() != null}" class="w-75 pb-2">
+                    <h5 th:text="${pizza.getSpecialOffer().getTitle()}" class="text-success"></h5>
+                    <small th:text="${pizza.getSpecialOffer().getDiscount()} + '%'" class="text-success"></small>
+                    <small> di</small>
+                    <small class="text-decoration-underline">sconto</small>
+                </div>
+
+                <div class="d-flex align-items-center flex-wrap gap-2">
+                    <small class="text-decoration-underline">Prezzo:</small>
+                    <h5 th:if="${pizza.getSpecialOffer() == null}" th:text=" ${pizza.getPrice()} + '&euro;'" class="d-inline"></h5>
+                    <div th:unless="${pizza.getSpecialOffer() == null}" class="d-flex align-items-center gap-2">
+                        <h6 th:text=" ${pizza.getPrice()} + '&euro;'" class="text-decoration-line-through text-danger"></h6>
+                        <h5 th:text="${pizza.calculateDiscount()} + '&euro;'"></h5>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <small class="text-decoration-underline">Descrizione:</small>
+                <h6 th:text="${pizza.getDescription()}"></h6>
+            </div>
+            
+        </div>
+    </div>
+    <input type="submit" class="hidden-submit">
+</form>

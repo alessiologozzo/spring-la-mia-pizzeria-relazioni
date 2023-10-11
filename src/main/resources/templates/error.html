@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/head :: head('Page not Found')}"></head>
+
+    <body>
+        <div class="container py-4">
+            <div class="row justify-content-center mt-5 pt-5">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <img th:src="@{/images/not-found.png}" alt="not-found">
+                </div>
+                <div class="col-12 d-flex justify-content-center pt-5">
+                    <a th:href="@{/}" class="btn btn-outline-light fs-2">Don't worry... Click me!</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

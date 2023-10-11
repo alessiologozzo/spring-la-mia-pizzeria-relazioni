@@ -1,0 +1,15 @@
+<div th:fragment="modal(description, negativeButton, positiveButton)" class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-secondary">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div th:text="${description}" class="modal-body"></div>
+        <div class="modal-footer">
+          <button th:text="${negativeButton}" type="button" class="btn btn-light" data-bs-dismiss="modal"></button>
+          <button th:text="${positiveButton}" type="button" class="btn btn-danger" onclick="goToDelete()"></button>
+        </div>
+      </div>
+    </div>
+  </div>

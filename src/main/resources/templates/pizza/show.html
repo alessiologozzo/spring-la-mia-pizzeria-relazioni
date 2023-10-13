@@ -3,10 +3,11 @@
     <head th:replace="~{fragments/head :: head(${pizza.getName()})}"></head>
 
     <body>
+        <div th:replace="fragments/navbar :: navbar()"></div>
+
         <h1 th:text=" ${pizza.getName()}" class="text-center pt-4 pb-5"></h1>
 
-        <div class="container py-4">
-
+        <div class="container py-4">            
             <div class="row align-items-center">
                 <div class="col-12 col-md-6">
                     <div class="show-img-container">
@@ -27,14 +28,8 @@
                 </div>
 
                 <div class="col-12 d-flex align-items-end gap-3">
-                    <button class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setPizzaData(${pizza.getId()}, '${pizza.getName()}')|">Elimina</button>
+                    <button class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setData(${pizza.getId()}, '${pizza.getName()}', '/')|">Elimina</button>
                     <a th:href="@{/edit/{id}(id=${pizza.getId()})}" class="btn btn-success">Modifica</a>
-                </div>
-            </div>
-
-            <div class="row justify-content-center pt-5 pb-5">
-                <div class="col-12 d-flex justify-content-center pt-1 pt-md-4">
-                    <a th:href="@{/}" class="btn btn-outline-light fs-2">Home</a>
                 </div>
             </div>
         </div>

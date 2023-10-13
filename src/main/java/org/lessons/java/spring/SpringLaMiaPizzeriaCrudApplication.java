@@ -29,8 +29,8 @@ public class SpringLaMiaPizzeriaCrudApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		List<SpecialOffer> specialOffers = Arrays.asList(
-				new SpecialOffer("MAXI Offerta!", 75, LocalDate.of(2024, 5, 8), LocalDate.of(2024, 5, 13)),
-				new SpecialOffer("Offertina", 10, LocalDate.of(2024, 5, 4), LocalDate.of(2024, 6, 27)));
+				new SpecialOffer("MAXI Offerta!", 75, LocalDate.now(), LocalDate.now().plusDays(3)),
+				new SpecialOffer("Sottocosto", 30, LocalDate.now(), LocalDate.now().plusDays(24)));
 		specialOfferService.saveAll(specialOffers);
 		
 		List<Pizza> pizzas = Arrays.asList(

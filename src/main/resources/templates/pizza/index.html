@@ -4,16 +4,17 @@
 <head th:replace="fragments/head :: head('Pizze')"></head>
 
 <body>
+    <div th:replace="fragments/navbar :: navbar()"></div>
+
     <h1 class="text-center pt-4 pb-5">Pizze</h1>
 
     <div class="container pt-3 pb-5">
-
         <div class="d-flex justify-content-between gap-5 flex-wrap">
             <a th:href="@{/create}" class="d-block dec-none me-5">
                 <i class="fa-solid fa-plus fs-1 bg-success p-4 d-block add"></i>
             </a>
             <form
-                class="d-flex flex-column justify-content-start align-items-center al-bg-secondary gap-3 p-4 al-border">
+                class="d-flex flex-column justify-content-start align-items-center al-bg-secondary gap-3 p-4 al-border position-relative">
                 <h2>Filtri</h2>
                 <input th:if="!${search}" type="text" name="name" th:value="${name}"
                     placeholder="Nome della pizza...">
@@ -40,8 +41,23 @@
                             </div>
                         </div>
                     </fieldset>
-                    <input type="submit" class="btn btn-outline-light mt-1 px-3 ms-3">
+                    <div class="d-flex flex-column justify-content-between gap-4">
+                        <div class="d-flex flex-column gap-2">
+                            <label for="specialOfferId" class="ps-2">
+                                <small>Offerte:</small>
+                            </label>
+                            <select name="specialOfferId" id="specialOfferId">
+                                <option th:selected="${oldSpecialOfferId} != null and ${oldSpecialOfferId} == 0" value="0">Tutte</option>
+                                <option th:each="specialOffer: ${specialOffers}" th:value="${specialOffer.getId()}" th:selected="${oldSpecialOfferId} != null and ${oldSpecialOfferId} == ${specialOffer.getId()}" th:text="${specialOffer.getTitle()}"></option>
+                            </select>
+                        </div>
+                        <input type="submit" class="btn btn-outline-light mt-1 px-3 ms-3">
+                    </div>
                 </div>
+
+                <a href="/" class="filter-refresh">
+                    <i class="fa-solid fa-arrows-rotate text-success"></i>
+                </a>
             </form>
         </div>
         

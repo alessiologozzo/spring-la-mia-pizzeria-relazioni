@@ -5,7 +5,7 @@
     <div class="card-body">
         
         <div class="actions">
-            <i class="fa-solid fa-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setPizzaData(${pizza.getId()}, '${pizza.getName()}')|"></i>
+            <i class="fa-solid fa-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setData(${pizza.getId()}, '${pizza.getName()}', '/')|"></i>
             <a th:href="@{/edit/{id}(id=${pizza.getId()})}" class="edit-icon">
                 <i class="fa-solid fa-pen-to-square"></i>
             </a>
@@ -18,7 +18,7 @@
 
         <div class="info-container">
             <div>
-                <div th:if="${pizza.getSpecialOffer() != null}" class="w-75 pb-2">
+                <div th:if="${pizza.getSpecialOffer()} != null and ${pizza.getSpecialOffer().isActive()}" class="w-75 pb-2">
                     <h5 th:text="${pizza.getSpecialOffer().getTitle()}" class="text-success"></h5>
                     <small th:text="${pizza.getSpecialOffer().getDiscount()} + '%'" class="text-success"></small>
                     <small> di</small>
@@ -27,8 +27,8 @@
 
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <small class="text-decoration-underline">Prezzo:</small>
-                    <h5 th:if="${pizza.getSpecialOffer() == null}" th:text=" ${pizza.getPrice()} + '&euro;'" class="d-inline"></h5>
-                    <div th:unless="${pizza.getSpecialOffer() == null}" class="d-flex align-items-center gap-2">
+                    <h5 th:if="${pizza.getSpecialOffer()} == null or !${pizza.getSpecialOffer().isActive()}" th:text=" ${pizza.getPrice()} + '&euro;'" class="d-inline"></h5>
+                    <div th:unless="${pizza.getSpecialOffer()} == null or !${pizza.getSpecialOffer().isActive()}" class="d-flex align-items-center gap-2">
                         <h6 th:text=" ${pizza.getPrice()} + '&euro;'" class="text-decoration-line-through text-danger"></h6>
                         <h5 th:text="${pizza.calculateDiscount()} + '&euro;'"></h5>
                     </div>

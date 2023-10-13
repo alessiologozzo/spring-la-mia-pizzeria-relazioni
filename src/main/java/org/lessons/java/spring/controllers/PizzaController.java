@@ -4,7 +4,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.lessons.java.spring.models.Pizza;
+import org.lessons.java.spring.models.SpecialOffer;
 import org.lessons.java.spring.services.PizzaService;
+import org.lessons.java.spring.services.SpecialOfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +23,13 @@ import jakarta.validation.Valid;
 public class PizzaController {
 	@Autowired
 	public PizzaService pizzaService;
+	
+	@Autowired
+	public SpecialOfferService specialOfferService;
 
 	@GetMapping("/")
 	public String index(Model model, @RequestParam(required = false) String name,
-			@RequestParam(required = false) String orderBy) {
+			@RequestParam(required = false) String orderBy, @RequestParam(required = false) Long specialOfferId) {
 		List<Pizza> pizzas = null;
 		boolean search = false, isEmpty = false;
 		String oldOrderBy = "default";
@@ -49,26 +54,33 @@ public class PizzaController {
 				pizzas = orderPizzasDesc(pizzas);
 		}
 
+		if(specialOfferId != null && specialOfferId > 0)
+			pizzas = pizzasOfSpecialOffer(pizzas, specialOfferId);
+		
+		List<SpecialOffer> specialOffers = specialOfferService.findAll();
+		
 		model.addAttribute("pizzas", pizzas);
 		model.addAttribute("isEmpty", isEmpty);
 		model.addAttribute("search", search);
 		model.addAttribute("oldName", name);
 		model.addAttribute("oldOrderBy", oldOrderBy);
-
-		return "index.html";
+		model.addAttribute("specialOffers", specialOffers);
+		model.addAttribute("oldSpecialOfferId", specialOfferId);
+		
+		return "pizza/index.html";
 	}
 
 	@GetMapping("/pizza/{id}")
 	public String show(@PathVariable long id, Model model) {
 		model.addAttribute("pizza", pizzaService.findById(id));
 
-		return "show.html";
+		return "pizza/show.html";
 	}
 
 	@GetMapping("/create")
 	public String create(Model model) {
 		model.addAttribute("pizza", Pizza.createEmptyPizza());
-		return "create.html";
+		return "pizza/create.html";
 	}
 
 	@PostMapping("/store")
@@ -76,7 +88,7 @@ public class PizzaController {
 		String result = "redirect:/";
 
 		if (bindingResult.hasErrors())
-			result = "create.html";
+			result = "pizza/create.html";
 		else
 			pizzaService.save(pizza);
 
@@ -88,16 +100,16 @@ public class PizzaController {
 		Pizza pizza = pizzaService.findById(id);
 		model.addAttribute("pizza", pizza);
 
-		return "edit.html";
+		return "pizza/edit.html";
 	}
 
 	@PostMapping("/update/{id}")
-	public String update(@Valid @ModelAttribute Pizza pizza, @PathVariable long id, BindingResult bindingResult,
+	public String update(@Valid @ModelAttribute Pizza pizza, BindingResult bindingResult, @PathVariable long id,
 			Model model) {
 		String result = "redirect:/";
 
 		if (bindingResult.hasErrors())
-			result = "edit.html";
+			result = "pizza/edit.html";
 		else {
 			Pizza pizzaToUpdate = pizzaService.findById(id);
 			pizzaToUpdate.setName(pizza.getName());
@@ -126,5 +138,9 @@ public class PizzaController {
 
 	private List<Pizza> orderPizzasDesc(List<Pizza> pizzas) {
 		return pizzas.stream().sorted(Comparator.comparingDouble(Pizza::getPrice).reversed()).toList();
+	}
+	
+	private List<Pizza> pizzasOfSpecialOffer(List<Pizza> pizzas, Long specialOfferId) {
+		return pizzas.stream().filter(pizza -> pizza.getSpecialOffer() != null && pizza.getSpecialOffer().getId() == specialOfferId).toList();
 	}
 }

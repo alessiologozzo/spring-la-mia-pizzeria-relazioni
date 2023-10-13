@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head('Offerte')"></head>
+
+<body>
+    <div th:replace="fragments/navbar :: navbar()"></div>
+
+    <h1 class="text-center pt-4 pb-5">Offerte Speciali</h1>
+
+    <div class="container pt-3 pb-3">
+        
+        <a href="/offers/create" class="btn btn-success mb-4">Nuova Offerta</a>
+        <div th:if="!${isEmpty}">
+            <div class="table-responsive">
+                <table class="table table-dark table-striped table-bordered">
+                    <thead>
+                        <th>Nome</th>
+                        <th>Sconto</th>
+                        <th>Data di inizio</th>
+                        <th>Data di fine</th>
+                        <th>Azioni</th>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="specialOffer: ${specialOffers}">
+                            <td th:text="${specialOffer.getTitle()}"></td>
+                            <td th:text="${specialOffer.getDiscount()} + '%'"></td>
+                            <td th:text="${specialOffer.getStartDate()}"></td>
+                            <td th:text="${specialOffer.getEndDate()}"></td>
+                            <td class="text-center">
+                                <a th:href="@{/offers/show/{id}(id=${specialOffer.getId()})}" class="d-inline-block pizza-icon pe-2">
+                                    <i class="fa-solid fa-pizza-slice"></i>
+                                </a>
+
+                                <a th:href="@{/offers/edit/{id}(id=${specialOffer.getId()})}" class="d-inline-block edit-icon opacity-none pe-2">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+
+                                <i class="fa-solid fa-trash trash-icon opacity-none" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setData(${specialOffer.getId()}, '${specialOffer.getTitle()}', '/offers/')|"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 th:unless="!${isEmpty}" class="text-center text-decoration-underline pt-5">Non ci sono offerte</h2>
+    </div>
+
+    <div th:replace="fragments/modal.html :: modal('Sei sicuro di voler eliminare questa offerta? Questa azione è irreversibile.', 'Annulla', 'Elimina')"></div>
+
+    <div th:replace="fragments/bootstrap_import :: js()"></div>
+</body>
+
+</html>

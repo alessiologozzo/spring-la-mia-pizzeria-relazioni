@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{fragments/head :: head('Nuova Offerta')}"></head>
+
+    <body th:attr="onload=|setInputDateMinMax()|">
+        <div th:replace="fragments/navbar :: navbar()"></div>
+
+        <h1 class="pt-3 pb-5 text-center">Nuova Offerta</h1>
+        <div class="container">
+            <div class="d-flex justify-content-center">
+                <form th:object="${specialOffer}" th:action="@{/offers/store}" method="post" class="d-flex flex-column gap-3 al-bg-secondary al-border p-4 mt-5">
+                    <h4 th:text="${specialOffer.getTitle()}" class="text-center pb-2"></h4>
+
+                    <div class="d-flex flex-column gap-1">
+                        <label for="title">Nome</label>
+                        <div th:if="${#fields.hasErrors('title')}">
+                            <input type="text" name="title" th:field="*{title}" id="title" placeholder="Nome..." required maxlength="255" class="form-control is-invalid">
+                            <div class="invalid-feedback">
+                                Inserisci il nome dell'offerta.
+                            </div>
+                        </div>
+                        <input type="text" th:unless="${#fields.hasErrors('title')}" name="title" th:field="*{title}" id="title" placeholder="Nome..." required maxlength="255">
+                    </div>
+    
+                    <div class="d-flex flex-column gap-1">
+                        <label for="discount">Sconto</label>
+                        <div th:if="${#fields.hasErrors('discount')}">
+                            <input type="number" name="discount" th:field="*{discount}" id="discount" placeholder="Sconto..." required min="0" max="100" class="form-control is-invalid">
+                            <div class="invalid-feedback">
+                                Inserisci uno sconto valido.
+                            </div>
+                        </div>
+                        <input type="number" th:unless="${#fields.hasErrors('discount')}" name="discount" th:field="*{discount}" id="discount" placeholder="Sconto..." required min="0" max="100">
+                    </div>
+
+                    <div class="d-flex flex-column gap-1">
+                        <label for="startDate">Data di inizio</label>
+                        <div th:if="${#fields.hasErrors('startDate')} or ${#fields.hasGlobalErrors()}">
+                            <input type="date" name="startDate" th:field="*{startDate}" id="startDate" placeholder="Data di inizio..." required class="form-control is-invalid">
+                            <div class="invalid-feedback">
+                                Inserisci una data valida.
+                            </div>
+                        </div>
+                        <input type="date" th:unless="${#fields.hasErrors('startDate')} or ${#fields.hasGlobalErrors()}" name="startDate" th:field="*{startDate}" id="startDate" placeholder="Data di inizio..." required>
+                    </div>
+
+                    <div class="d-flex flex-column gap-1">
+                        <label for="endDate">Data di fine</label>
+                        <div th:if="${#fields.hasErrors('endDate')} or ${#fields.hasGlobalErrors()}">
+                            <input type="date" name="endDate" th:field="*{endDate}" id="endDate" placeholder="Data di fine..." required class="form-control is-invalid">
+                            <div class="invalid-feedback">
+                                Inserisci una data valida.
+                            </div>
+                        </div>
+                        <input type="date" th:unless="${#fields.hasErrors('endDate')} or ${#fields.hasGlobalErrors()}" name="endDate" th:field="*{endDate}" id="endDate" placeholder="Data di fine..." required>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <input type="submit" class="btn btn-outline-light px-4" value="Invia">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="pt-5">
+                <a th:href="@{/}" class="btn btn-outline-light fs-3">Home</a>
+            </div>
+        </div>
+    </body>
+</html>

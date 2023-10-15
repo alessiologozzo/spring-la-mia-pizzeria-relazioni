@@ -3,14 +3,14 @@
 
 <head th:replace="fragments/head :: head('Pizze')"></head>
 
-<body>
+<body th:attr="onload=|truncateElements('special-offer-id', 15); truncateElementsList('pizza-ingredients-', ${pizzas.size()}, 100)|">
     <div th:replace="fragments/navbar :: navbar()"></div>
 
     <h1 class="text-center pt-4 pb-5">Pizze</h1>
 
     <div class="container pt-3 pb-5">
         <div class="d-flex justify-content-between gap-5 flex-wrap">
-            <a th:href="@{/create}" class="d-block dec-none me-5">
+            <a th:href="@{/pizzas/create}" class="d-block dec-none me-5">
                 <i class="fa-solid fa-plus fs-1 bg-success p-4 d-block add"></i>
             </a>
             <form
@@ -43,19 +43,19 @@
                     </fieldset>
                     <div class="d-flex flex-column justify-content-between gap-4">
                         <div class="d-flex flex-column gap-2">
-                            <label for="specialOfferId" class="ps-2">
+                            <label for="special-offer-id" class="ps-2">
                                 <small>Offerte:</small>
                             </label>
-                            <select name="specialOfferId" id="specialOfferId">
+                            <select name="specialOfferId" id="special-offer-id" class="select-max-width">
                                 <option th:selected="${oldSpecialOfferId} != null and ${oldSpecialOfferId} == 0" value="0">Tutte</option>
-                                <option th:each="specialOffer: ${specialOffers}" th:value="${specialOffer.getId()}" th:selected="${oldSpecialOfferId} != null and ${oldSpecialOfferId} == ${specialOffer.getId()}" th:text="${specialOffer.getTitle()}"></option>
+                                <option th:each="specialOffer: ${specialOffers}" th:value="${specialOffer.getId()}" th:selected="${oldSpecialOfferId} != null and ${oldSpecialOfferId} == ${specialOffer.getId()}" th:text="${specialOffer.getTitle()}" class="data-truncable-element"></option>
                             </select>
                         </div>
                         <input type="submit" class="btn btn-outline-light mt-1 px-3 ms-3">
                     </div>
                 </div>
 
-                <a href="/" class="filter-refresh">
+                <a href="/pizzas/" class="filter-refresh">
                     <i class="fa-solid fa-arrows-rotate text-success"></i>
                 </a>
             </form>
@@ -64,14 +64,16 @@
         <div th:if="!${isEmpty}">
 
             <div class="row pt-3">
-                <div th:each="pizza: ${pizzas}" class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-4 p-3">
-                    <div th:replace="fragments/pizza_card :: pizzaCard(${pizza})"></div>
+                <div th:each="pizza, status: ${pizzas}" class="col-12 col-sm-6 col-lg-4 col-xl-3 mt-4 p-3">
+                    <div th:replace="fragments/pizza_card :: pizzaCard(${pizza}, ${status.index})"></div>
                 </div>
             </div>
         </div>
 
         <h2 th:unless="!${isEmpty}" class="text-center text-decoration-underline pt-5">Non ci sono pizze</h2>
     </div>
+
+    <form method="post" id="delete-form"></form>
 
     <div th:replace="fragments/modal.html :: modal('Sei sicuro di voler eliminare questa pizza? Questa azione è irreversibile.', 'Annulla', 'Elimina')"></div>
 

@@ -9,7 +9,7 @@
         <div class="container">
 
             <div class="d-flex justify-content-center">
-                <form th:object="${specialOffer}" th:action="@{/offers/update/{id}(id=${id})}" method="post" class="d-flex flex-column gap-3 al-bg-secondary al-border p-4 mt-5">
+                <form th:object="${specialOffer}" th:action="@{/offers/update/{id}(id=${id})}" method="post" class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 col-xxl-4 d-flex flex-column gap-3 al-bg-secondary al-border p-4 mt-5">
                     <h4 th:text="${specialOffer.getTitle()}" class="text-center pb-2"></h4>
 
                     <div class="d-flex flex-column gap-1">
@@ -60,10 +60,6 @@
                         <input type="submit" class="btn btn-outline-light px-4" value="Invia">
                     </div>
                 </form>
-            </div>
-            
-            <div class="pt-5">
-                <a th:href="@{/}" class="btn btn-outline-light fs-3">Home</a>
             </div>
         </div>
     </body>

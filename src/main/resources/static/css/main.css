@@ -8,15 +8,12 @@ body {
 	background-color: var(--primary_color);
 	color: whitesmoke;
 	word-wrap: break-word;
+	word-break: break-all;
 }
 
 .logo-container {
 	width: 180px;
 	overflow: hidden;
-}
-
-.card-body {
-	min-height: 200px;
 }
 
 img {
@@ -236,7 +233,6 @@ h6 {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	padding: 0 1.5rem;
 }
 
 .filter-refresh {
@@ -284,4 +280,97 @@ h6 {
 .table-overflow {
 	max-height: 450px;
 	overflow-y: auto;
+}
+
+.search-box {
+	background-color: aliceblue;
+	border-radius: 4px;
+	padding-top: 0.1rem;
+	position: relative;
+}
+
+#result-box {
+	position: absolute;
+	bottom: -69px;
+	left: 0;
+	width: 100%;
+	max-height: 150px;
+	overflow-y: auto;
+	background-color: aliceblue;
+	color: black;
+	z-index: 10;
+	border-radius: 0 0 4px 4px;
+	border: 1px solid black;
+	border-top: 0;
+
+}
+
+#search {
+	background-color: transparent;
+	border: 1px solid aliceblue;
+	outline-offset: 0;
+	border-radius: 4px;
+}
+
+ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+li {
+	padding: 0.3rem 0.4rem;
+	font-style: italic;
+	cursor: pointer;
+}
+
+li:hover {
+	background-color: #e4eaf0;
+}
+
+.removable-ingredient {
+	position: relative;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.removable-ingredient::before {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	content: "";
+	background-color: black;
+	opacity: 0;
+	transition: opacity 300ms;
+}
+
+.removable-ingredient::after {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	content: "\f00d";
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	font-size: 1.3rem;
+	color: orangered;
+	opacity: 0;
+	transition: opacity 300ms;
+}
+
+.removable-ingredient:hover::before {
+	opacity: 0.5;
+}
+
+.removable-ingredient:hover::after {
+	opacity: 1;
+}
+
+.select-max-width {
+	max-width: 150px;
+}
+
+.text-no-wrap {
+	white-space: nowrap;
 }

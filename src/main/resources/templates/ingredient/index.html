@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head :: head('Ingredienti')"></head>
+
+<body th:attr="onload=|truncateElementsList('ingredient-name-', '${ingredients.size()}', 15)|">
+    <div th:replace="fragments/navbar :: navbar()"></div>
+
+    <h1 class="text-center pt-4 pb-5">Ingredienti</h1>
+
+    <div class="container pt-3 pb-3">
+        
+        <a href="/ingredients/create" class="btn btn-success mb-4">Nuovo Ingrediente</a>
+        <div th:if="${ingredients.size() > 0}">
+            <div class="table-responsive">
+                <table class="table table-dark table-striped table-bordered">
+                    <thead>
+                        <th>Nome</th>
+                        <th>Pizze correlate</th>
+                        <th>Azioni</th>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="ingredient, status: ${ingredients}">
+                            <td th:id="'ingredient-name-' + ${status.index}" th:text="${ingredient.getName()}"></td>
+                            <td th:text="${ingredient.getPizzasNum()}"></td>
+                            <td class="text-center">
+                                <a th:href="@{/ingredients/{id}(id=${ingredient.getId()})}" class="d-inline-block pizza-icon pe-2">
+                                    <i class="fa-solid fa-pizza-slice"></i>
+                                </a>
+
+                                <a th:href="@{/ingredients/edit/{id}(id=${ingredient.getId()})}" class="d-inline-block edit-icon opacity-none pe-2">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+
+                                <i class="fa-solid fa-trash trash-icon opacity-none" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setDeleteAction('${ingredient.getName()}', '/ingredients/delete/${ingredient.getId()}')|"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 th:unless="${ingredients.size() > 0}" class="text-center text-decoration-underline pt-5">Non ci sono ingredienti</h2>
+    </div>
+
+    <form method="post" id="delete-form"></form>
+
+    <div th:replace="fragments/modal.html :: modal('Sei sicuro di voler eliminare questo ingrediente? Questa azione è irreversibile.', 'Annulla', 'Elimina')"></div>
+
+    <div th:replace="fragments/bootstrap_import :: js()"></div>
+</body>
+
+</html>

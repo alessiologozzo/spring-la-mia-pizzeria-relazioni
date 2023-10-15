@@ -6,6 +6,7 @@ import org.lessons.java.spring.models.Pizza;
 import org.lessons.java.spring.models.SpecialOffer;
 import org.lessons.java.spring.services.PizzaService;
 import org.lessons.java.spring.services.SpecialOfferService;
+import org.lessons.java.spring.utils.StringDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,15 +37,16 @@ public class SpecialOfferController {
 		return "special_offer/index.html";
 	}
 
-	@GetMapping("/show/{id}")
+	@GetMapping("/{id}")
 	public String show(@PathVariable long id, Model model) {
 		SpecialOffer specialOffer = specialOfferService.findById(id);
-		List<Pizza> pizzas = pizzaService.findAll();
-		pizzas = freePizzas(pizzas, id);
+		List<Pizza> freePizzas = freePizzas(pizzaService.findAll(), id);
+		List<Pizza> allPizzas = pizzaService.findAll();
 
 		model.addAttribute("specialOffer", specialOffer);
-		model.addAttribute("freePizzas", pizzas);
-		model.addAttribute("variableDTO", new VariableDTO());
+		model.addAttribute("freePizzas", freePizzas);
+		model.addAttribute("allPizzas", allPizzas);
+		model.addAttribute("stringDTO", new StringDTO());
 
 		return "special_offer/show.html";
 	}
@@ -58,13 +60,10 @@ public class SpecialOfferController {
 
 	@PostMapping("/store")
 	public String store(@Valid @ModelAttribute SpecialOffer specialOffer, BindingResult bindingResult) {
-		String result = "redirect:/offers/";
-		if (bindingResult.hasErrors())
-			result = "special_offer/edit.html";
-		else
+		if (!bindingResult.hasErrors())
 			specialOfferService.save(specialOffer);
 
-		return result;
+		return bindingResult.hasErrors() ? "special_offer/create.html" : "redirect:/offers/" + specialOffer.getId();
 	}
 
 	@GetMapping("/edit/{id}")
@@ -79,20 +78,17 @@ public class SpecialOfferController {
 	@PostMapping("/update/{id}")
 	public String update(@Valid @ModelAttribute SpecialOffer specialOffer, BindingResult bindingResult,
 			@PathVariable long id) {
-		String result = "redirect:/offers/";
 
-		if (bindingResult.hasErrors())
-			result = "special_offer/edit.html";
-		else {
+		if (!bindingResult.hasErrors()) {
 			SpecialOffer specialOfferToUpdate = specialOfferService.findById(id);
 			specialOfferToUpdate.set(specialOffer);
 			specialOfferService.save(specialOfferToUpdate);
 		}
 
-		return result;
+		return bindingResult.hasErrors() ? "special_offer/edit.html" : "redirect:/offers/" + id;
 	}
 
-	@GetMapping("/delete/{id}")
+	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable long id) {
 		specialOfferService.deleteById(id);
 
@@ -100,21 +96,21 @@ public class SpecialOfferController {
 	}
 
 	@PostMapping("/plug/{id}")
-	public String plug(@ModelAttribute VariableDTO idsStr, @PathVariable long id) {
+	public String plug(@ModelAttribute StringDTO idsStr, @PathVariable long id) {
 		String[] strIds = idsStr.getValue().split(",");
 		for (String strId : strIds)
 			attach(id, Long.parseLong(strId));
 
-		return "redirect:/offers/show/" + id;
+		return "redirect:/offers/" + id;
 	}
 
 	@PostMapping("/unplug/{id}")
-	public String unplug(@ModelAttribute VariableDTO idsStr, @PathVariable long id) {
+	public String unplug(@ModelAttribute StringDTO idsStr, @PathVariable long id) {
 		String[] strIds = idsStr.getValue().split(",");
 		for (String strId : strIds)
 			detach(id, Long.parseLong(strId));
 
-		return "redirect:/offers/show/" + id;
+		return "redirect:/offers/" + id;
 	}
 
 	private List<Pizza> freePizzas(List<Pizza> pizzas, long id) {
@@ -134,22 +130,4 @@ public class SpecialOfferController {
 		pizza.setSpecialOffer(null);
 		pizzaService.save(pizza);
 	}
-
-	private class VariableDTO {
-		private String value;
-
-		public VariableDTO() {
-			value = "prova";
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		@SuppressWarnings("unused")
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
-
 }

@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head th:replace="~{fragments/head :: head(${pizza.getName()})}"></head>
 
-    <body>
+    <body onload="addCommasToIngredientsLinksContainer()">
         <div th:replace="fragments/navbar :: navbar()"></div>
 
-        <h1 th:text=" ${pizza.getName()}" class="text-center pt-4 pb-5"></h1>
+        <div class="container">            
+            <h1 th:text=" ${pizza.getName()}" class="text-center pt-4 pb-5 truncate"></h1>
 
-        <div class="container py-4">            
-            <div class="row align-items-center">
+            <div class="row align-items-center py-4">
                 <div class="col-12 col-md-6">
                     <div class="show-img-container">
                         <img th:if="${pizza.getUrl()} != null" th:src="@{${pizza.getUrl()}}" th:alt="${pizza.getName()}">
@@ -21,18 +21,29 @@
                         <h6 class="text-decoration-underline">Prezzo:</h6>
                         <h3 th:text=" ${pizza.getPrice()} + '&euro;'"></h3>
                     </div>
+
                     <div class="d-flex align-items-center gap-3">
-                        <h6 class="text-decoration-underline">Descrizione:</h6>
-                        <h5 th:text=" ${pizza.getDescription()}"></h5>
+                        <h6 class="text-decoration-underline text-no-wrap">Ingredienti:</h6>
+                        <div th:if="${pizza.getIngredients().size() > 0}" id="ingredients-links-container" class="d-flex flex-wrap gap-2">
+                            <a th:href="@{/ingredients/{id}(id=${ingredient.getId()})}" th:each="ingredient: ${pizza.getIngredients()}" th:text="${ingredient.getName()}" class="fs-5 text-decoration-none"></a>
+                        </div>
+                        <div th:unless="${pizza.getIngredients().size() > 0}" class="text-danger">Questa pizza non ha ingredienti</div>
+                    </div>
+
+                    <div th:if="${pizza.getSpecialOffer()} != null" class="d-flex align-items-center gap-3">
+                        <h6 class="text-decoration-underline text-no-wrap">Offerta Speciale:</h6>
+                        <a th:href="@{/offers/{id}(id=${pizza.getSpecialOffer().getId()})}" th:text=" ${pizza.getSpecialOffer().getTitle()}" class="fs-2 text-decoration-none truncate"></a>
                     </div>
                 </div>
 
                 <div class="col-12 d-flex align-items-end gap-3">
-                    <button class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setData(${pizza.getId()}, '${pizza.getName()}', '/')|">Elimina</button>
-                    <a th:href="@{/edit/{id}(id=${pizza.getId()})}" class="btn btn-success">Modifica</a>
+                    <button class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setDeleteAction('${pizza.getName()}', '/pizzas/delete/${pizza.getId()}')|">Elimina</button>
+                    <a th:href="@{/pizzas/edit/{id}(id=${pizza.getId()})}" class="btn btn-success">Modifica</a>
                 </div>
             </div>
         </div>
+
+        <form method="post" id="delete-form"></form>
 
         <div th:replace="fragments/modal.html :: modal('Sei sicuro di voler eliminare questa pizza? Questa azione è irreversibile.', 'Annulla', 'Elimina')"></div>
 

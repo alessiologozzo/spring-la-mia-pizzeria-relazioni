@@ -1,12 +1,12 @@
-<form th:fragment="pizzaCard(pizza)" th:action="@{/pizza/{id}(id=${pizza.getId()})}" method="get" class="pizza-card">
+<form th:fragment="pizzaCard(pizza, index)" th:action="@{/pizzas/{id}(id=${pizza.getId()})}" method="get" class="pizza-card">
     <div class="card-head">
-        <h5 th:text="${pizza.getName()}" class="truncate"></h5>
+        <h5 th:text="${pizza.getName()}" class="truncate px-3"></h5>
     </div>
     <div class="card-body">
         
         <div class="actions">
-            <i class="fa-solid fa-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setData(${pizza.getId()}, '${pizza.getName()}', '/')|"></i>
-            <a th:href="@{/edit/{id}(id=${pizza.getId()})}" class="edit-icon">
+            <i class="fa-solid fa-trash trash-icon" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setDeleteAction('${pizza.getName()}', '/pizzas/delete/${pizza.getId()}')|"></i>
+            <a th:href="@{/pizzas/edit/{id}(id=${pizza.getId()})}" class="edit-icon">
                 <i class="fa-solid fa-pen-to-square"></i>
             </a>
         </div>
@@ -19,7 +19,7 @@
         <div class="info-container">
             <div>
                 <div th:if="${pizza.getSpecialOffer()} != null and ${pizza.getSpecialOffer().isActive()}" class="w-75 pb-2">
-                    <h5 th:text="${pizza.getSpecialOffer().getTitle()}" class="text-success"></h5>
+                    <h5 th:text="${pizza.getSpecialOffer().getTitle()}" class="text-success truncate"></h5>
                     <small th:text="${pizza.getSpecialOffer().getDiscount()} + '%'" class="text-success"></small>
                     <small> di</small>
                     <small class="text-decoration-underline">sconto</small>
@@ -36,8 +36,9 @@
             </div>
 
             <div>
-                <small class="text-decoration-underline">Descrizione:</small>
-                <h6 th:text="${pizza.getDescription()}"></h6>
+                <small class="text-decoration-underline">Ingredienti:</small>
+                <h6 th:if="${pizza.getIngredients().size() > 0}" th:id="'pizza-ingredients-' + ${index}" th:text="${pizza.ingredientsToString()}" class="data-truncable-element"></h6>
+                <h6 th:unless="${pizza.getIngredients().size() > 0}" class="text-danger">Questa pizza non ha ingredienti</h6>
             </div>
             
         </div>

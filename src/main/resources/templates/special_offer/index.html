@@ -3,7 +3,7 @@
 
 <head th:replace="fragments/head :: head('Offerte')"></head>
 
-<body>
+<body th:attr="onload=|truncateElementsList('special-offer-title-', '${specialOffers.size()}', 15)|">
     <div th:replace="fragments/navbar :: navbar()"></div>
 
     <h1 class="text-center pt-4 pb-5">Offerte Speciali</h1>
@@ -11,7 +11,7 @@
     <div class="container pt-3 pb-3">
         
         <a href="/offers/create" class="btn btn-success mb-4">Nuova Offerta</a>
-        <div th:if="!${isEmpty}">
+        <div th:if="${specialOffers.size()} > 0">
             <div class="table-responsive">
                 <table class="table table-dark table-striped table-bordered">
                     <thead>
@@ -23,13 +23,13 @@
                     </thead>
 
                     <tbody>
-                        <tr th:each="specialOffer: ${specialOffers}">
-                            <td th:text="${specialOffer.getTitle()}"></td>
+                        <tr th:each="specialOffer, status: ${specialOffers}">
+                            <td th:text="${specialOffer.getTitle()}" th:id="'special-offer-title-' + ${status.index}"></td>
                             <td th:text="${specialOffer.getDiscount()} + '%'"></td>
                             <td th:text="${specialOffer.getStartDate()}"></td>
                             <td th:text="${specialOffer.getEndDate()}"></td>
                             <td class="text-center">
-                                <a th:href="@{/offers/show/{id}(id=${specialOffer.getId()})}" class="d-inline-block pizza-icon pe-2">
+                                <a th:href="@{/offers/{id}(id=${specialOffer.getId()})}" class="d-inline-block pizza-icon pe-2">
                                     <i class="fa-solid fa-pizza-slice"></i>
                                 </a>
 
@@ -37,7 +37,7 @@
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
 
-                                <i class="fa-solid fa-trash trash-icon opacity-none" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setData(${specialOffer.getId()}, '${specialOffer.getTitle()}', '/offers/')|"></i>
+                                <i class="fa-solid fa-trash trash-icon opacity-none" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setDeleteAction('${specialOffer.getTitle()}', '/offers/delete/${specialOffer.getId()}')|"></i>
                             </td>
                         </tr>
                     </tbody>
@@ -45,8 +45,10 @@
             </div>
         </div>
 
-        <h2 th:unless="!${isEmpty}" class="text-center text-decoration-underline pt-5">Non ci sono offerte</h2>
+        <h2 th:unless="${specialOffers.size()} > 0" class="text-center text-decoration-underline pt-5">Non ci sono offerte</h2>
     </div>
+
+    <form method="post" id="delete-form"></form>
 
     <div th:replace="fragments/modal.html :: modal('Sei sicuro di voler eliminare questa offerta? Questa azione è irreversibile.', 'Annulla', 'Elimina')"></div>
 

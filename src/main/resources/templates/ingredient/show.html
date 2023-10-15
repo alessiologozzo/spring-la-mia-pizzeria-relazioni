@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head(${ingredient.getName()})}"></head>
+
+<body th:attr="onload=|truncateElementsList('pizza-name-', ${ingredient.getPizzas().size()}, 25)|">
+    <div th:replace="fragments/navbar :: navbar()"></div>
+
+    <div class="container py-4">
+        <h1 th:text="${ingredient.getName()}" class="text-center pt-4 pb-5 truncate"></h1>
+
+        <div class="d-flex align-items-end gap-3">
+            <button class="btn btn-danger mt-4" data-bs-toggle="modal" data-bs-target="#deleteModal" th:attr="onclick=|setDeleteAction('${ingredient.getName()}', '/ingredients/delete/${ingredient.getId()}')|">Elimina</button>
+            <a th:href="@{/ingredients/edit/{id}(id=${ingredient.getId()})}" class="btn btn-success">Modifica</a>
+        </div>
+
+        <h3 class="mt-4 pt-5 pb-2">Pizze correlate</h3>
+
+        <div th:if="${ingredient.getPizzas().size() > 0}" class="table-responsive">
+            <table class="table table-dark table-striped table-bordered">
+                <thead>
+                    <th>Nome</th>
+                    <th>Prezzo</th>
+                    <th>Prezzo Scontato</th>
+                    <th>Vai alla pizza</th>
+                </thead>
+                <tbody>
+                    <tr th:each="pizza, status: ${ingredient.getPizzas()}">
+                        <td th:id="'pizza-name-' + ${status.index}" th:text="${pizza.getName()}" class="align-middle"></td>
+                        <td th:text="${pizza.getPrice()} + '&euro;'" class="align-middle"></td>
+                        <td th:text="${pizza.calculateDiscount()} + '&euro;'" class="align-middle"></td>
+                        <td>
+                            <a th:href="@{/pizzas/{id}(id=${pizza.getId()})}">
+                                <div class="table-img-container">
+                                    <img th:if="${pizza.getUrl} != null" th:src="@{${pizza.getUrl()}}" th:alt="${pizza.getName()}">
+                                    <img th:unless="${pizza.getUrl} != null" th:src="@{/images/pizza.jpg}" th:alt="${pizza.getName()}">
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:unless="${ingredient.getPizzas().size() > 0}">
+            <h5 class="text-center text-decoration-underline pt-3">Questo ingrediente non ha pizze correlate</h5>
+        </div>
+    </div>
+
+    <form method="post" id="delete-form"></form>
+
+    <div th:replace="fragments/modal.html :: modal('Sei sicuro di voler eliminare questo ingrediente? Questa azione è irreversibile.', 'Annulla', 'Elimina')"></div>
+
+    <div th:replace="fragments/bootstrap_import :: js()"></div>
+</body>
+
+</html>

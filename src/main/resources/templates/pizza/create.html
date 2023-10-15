@@ -1,58 +1,85 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="~{fragments/head :: head('Nuova Pizza')}"></head>
 
-    <body>
-        <div th:replace="fragments/navbar :: navbar()"></div>
+<head th:replace="~{fragments/head :: head('Nuova Pizza')}"></head>
 
-        <h1 class="pt-3 pb-5 text-center">Aggiungi una pizza</h1>
-        <div class="container">
-            <div class="d-flex justify-content-center">
-                <form th:object="${pizza}" th:action="@{/store}" method="post" class="d-flex flex-column gap-3 al-bg-secondary al-border p-4 mt-5">
-                    <h4 class="text-center pb-2">Nuova pizza</h4>
+<body th:attr="onload=|setSelectedIngredients('${pizza.ingredientsToString()}'); filterSelectedIngredients()|"
+    onclick="hideTips()">
+    <div th:replace="fragments/navbar :: navbar()"></div>
+
+    <h1 class="pt-3 pb-5 text-center">Nuova Pizza</h1>
+    <div class="container">
+        <div class="w-100 justify-content-center p-3">
+            <form th:action="@{/pizzas/store}" method="post" id="pizza-form"
+                class="row justify-content-center">
+                <div th:object="${pizza}"
+                    class="col-11 col-sm-9 col-md-7 col-lg-6 col-xl-5 col-xxl-4 d-flex flex-column gap-3 al-bg-secondary al-border p-4 mt-5">
 
                     <div class="d-flex flex-column gap-1">
                         <label for="name">Nome</label>
                         <div th:if="${#fields.hasErrors('name')}">
-                            <input type="text" name="name" th:field="*{name}" id="name" placeholder="Nome..." required maxlength="255" class="form-control is-invalid">
+                            <input type="text" name="name" th:field="*{name}" id="name" placeholder="Nome..." required
+                                maxlength="255" class="form-control is-invalid">
                             <div class="invalid-feedback">
                                 Inserisci il nome della pizza.
                             </div>
                         </div>
-                        <input type="text" th:unless="${#fields.hasErrors('name')}" name="name" th:field="*{name}" id="name" placeholder="Nome..." required maxlength="255">
+                        <input type="text" th:unless="${#fields.hasErrors('name')}" name="name" th:field="*{name}"
+                            id="name" placeholder="Nome..." required maxlength="255">
                     </div>
-    
-                    <div class="d-flex flex-column gap-1">
-                        <label for="description">Ingredienti</label>
-                        <div th:if="${#fields.hasErrors('description')}">
-                            <input type="text" name="description" th:field="*{description}" id="description" placeholder="Ingredienti..." required maxlength="255" class="form-control is-invalid">
-                            <div class="invalid-feedback">
-                                Inserisci gli ingredienti della pizza.
-                            </div>
-                        </div>
-                        <input type="text" th:unless="${#fields.hasErrors('description')}" name="description" th:field="*{description}" id="name" placeholder="Ingredienti..." required maxlength="255">
-                    </div>
-    
+
                     <div class="d-flex flex-column gap-1">
                         <label for="price">Prezzo</label>
                         <div th:if="${#fields.hasErrors('price')}">
-                            <input type="number" name="price" th:field="*{price}" id="price" placeholder="Prezzo..." required maxlength="255" min="0" max="1000000" step="0.5" class="form-control is-invalid">
+                            <input type="number" name="price" th:field="*{price}" id="price" placeholder="Prezzo..."
+                                required maxlength="255" min="0" max="1000000" step="0.5"
+                                class="form-control is-invalid">
                             <div class="invalid-feedback">
                                 Inserisci il prezzo della pizza. Il prezzo non può essere negativo.
                             </div>
                         </div>
-                        <input type="number" th:unless="${#fields.hasErrors('price')}" name="price" th:field="*{price}" id="price" placeholder="Prezzo..." step="0.5" min="0" max="10000000">
+                        <input type="number" th:unless="${#fields.hasErrors('price')}" name="price" th:field="*{price}"
+                            id="price" placeholder="Prezzo..." step="0.5" min="0" max="10000000">
                     </div>
-    
+
+                    <div id="selected-ingredients">
+                        <span>Ingredienti selezionati</span>
+                        <div class="d-flex flex-wrap gap-2 pt-2">
+                            <span th:attr="onclick=|removeIngredient('${ingredient.getName()}')|"
+                                th:each="ingredient: ${ingredients}" th:text="${ingredient.getName()}"
+                                class="badge text-bg-primary removable-ingredient"></span>
+
+                            <small class="w-100 text-center text-decoration-underline"
+                                id="no-selected-ingredients">Nessun ingrediente selezionato</small>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="search" class="pb-2">Aggiungi un ingrediente</label>
+                        <div class="search-box d-flex flex-column">
+                            <input onclick="shouldShowTips(event)" onkeyup="shouldShowTips(event)" type="text"
+                                id="search" class="input-search" placeholder="Cerca un ingrediente...">
+                            <div id="result-box" class="d-none">
+                                <hr class="my-1 text-dark">
+                                <ul>
+                                    <li th:attr="onclick=|addIngredient('${ingredient.getName()}')|"
+                                        th:each="ingredient: ${ingredients}" th:text="${ingredient.getName()}"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-flex justify-content-end mt-3">
-                        <input type="submit" class="btn btn-outline-light px-4" value="Invia">
+                        <span onclick="submitPizzaForm()" class="btn btn-outline-light px-4">Invia</span>
                     </div>
-                </form>
-            </div>
-            
-            <div class="pt-5">
-                <a th:href="@{/}" class="btn btn-outline-light fs-3">Home</a>
-            </div>
+                </div>
+
+                <div th:object="${stringDTO}" class="d-none">
+                    <input type="text" th:field="*{value}" id="pizza-ingredients-hidden-text">
+                </div>
+            </form>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
